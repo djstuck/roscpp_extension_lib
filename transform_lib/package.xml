@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>transform_lib</name>
+  <version>0.0.0</version>
+  <description>The transform_lib package contains common transform functionality while utilizing the eigen libary </description>
+
+  <maintainer email="david.stuckey888@gmail.com">Dave Stuckey</maintainer>
+
+  <license>TODO</license>
+
+
+  <author email="david.stuckey888@gmail.com">Dave Stuckey</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>geometry_msgs</depend>
+  <depend>roscpp</depend>
+  <depend>eigen</depend>
+
+  <export>
+  </export>
+</package>
