@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>roscpp_extension_lib</name>
+  <version>0.0.0</version>
+  <description>The roscpp_extension_lib package adds functionality to the standard roscpp libary</description>
+
+  <maintainer email="david.stuckey888@gmail.com">Dave Stuckey</maintainer>
+
+  <license>TODO</license>
+
+  <author email="david.stuckey888@gmail.com">Dave Stuckey</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <exec_depend>node_param_loader</exec_depend>
+
+  <export>
+    <metapackage/>
+  </export>
+</package>

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>node_param_loader</name>
+  <version>0.0.0</version>
+  <description>The node_param_loader package</description>
+
+  <maintainer email="david.stuckey888@gmail.com">dave</maintainer>
+
+  <license>TODO</license>
+
+  <author email="david.stuckey888@gmail.com">David Stuckey</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>roscpp</depend>
+
+  <export>
+  </export>
+</package>
