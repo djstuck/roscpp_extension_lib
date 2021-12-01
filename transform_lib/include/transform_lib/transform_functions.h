@@ -337,8 +337,14 @@ namespace transform_lib
         ros::Time time_;
         ros::Duration time_out_;
         std::string error_msg_;
+        bool initialized_ = false;
 
     public:
+        Transform()
+        {
+
+        }
+
         Transform(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, ros::Time time, ros::Duration time_out, std::string error_msg) : target_frame_(target_frame), source_frame_(source_frame), tfBuffer_(tfBuffer), time_(time), time_out_(time_out), error_msg_(error_msg)
         {
             performInitialChecks();
@@ -358,6 +364,48 @@ namespace transform_lib
         }
 
         Transform(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer)
+        {
+            time_out_ = ros::Duration(0.0);
+            time_ = ros::Time::now();
+            error_msg_ = "Cannot find transform!";
+            tfBuffer_->_frameExists(target_frame_);
+            performInitialChecks();
+        }
+
+        void initialize(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, ros::Time time, ros::Duration time_out, std::string error_msg) 
+        {
+            target_frame_ = target_frame;
+            source_frame_ = source_frame;
+            tfBuffer_ = tfBuffer;
+            time_ = time;
+            time_out_ = time_out;
+            error_msg_ = error_msg;
+            performInitialChecks();
+        }
+
+        void initialize(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, ros::Time time, std::string error_msg) 
+        {
+            target_frame_ = target_frame;
+            source_frame_ = source_frame;
+            tfBuffer_ = tfBuffer;
+            time_ = time;
+            error_msg_ = error_msg;
+            time_out_ = ros::Duration(0.0);
+            performInitialChecks();
+        }
+
+        void initialize(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, std::string error_msg) 
+        {
+            target_frame_ = target_frame;
+            source_frame_ = source_frame;
+            tfBuffer_ = tfBuffer;
+            error_msg_ = error_msg;
+            time_out_ = ros::Duration(0.0);
+            time_ = ros::Time::now();
+            performInitialChecks();
+        }
+
+        void initialize(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer)
         {
             time_out_ = ros::Duration(0.0);
             time_ = ros::Time::now();
@@ -410,9 +458,22 @@ namespace transform_lib
                     ros::Duration(1.0).sleep();
                     transform_exception = true;
                 }
-                
             } while (transform_exception);
             ROS_INFO("Time to find transform between %s and %s was: %i ms", target_frame_, source_frame_, time_span);
+        }
+
+        inline void getTransformToEigen(Eigen::Matrix4f &result)
+        {
+            geometry_msgs::TransformStamped transform_result;
+            getTransform(transform_result);
+            transformToEigen(transform_result, result);
+        }
+
+        inline void getTransformToEigenTimed(Eigen::Matrix4f &result)
+        {
+            geometry_msgs::TransformStamped transform_result;
+            getTransformTimed(transform_result);
+            transformToEigen(transform_result, result);
         }
 
     private:
@@ -441,6 +502,7 @@ namespace transform_lib
             {
                 ROS_ERROR("tf2_ros::Buffer was not initialized properly.");
             }
+            initialized_ = true;
         }
 
     };
