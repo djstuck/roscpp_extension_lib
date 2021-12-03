@@ -217,6 +217,46 @@ namespace transform_lib
      * 
      ********************************************************************************************************************************/
 
+    inline void eigenToPoint(Eigen::Matrix4f &m, geometry_msgs::Point &pt)
+    {
+        pt.x = m.T_MATRIX_X;
+        pt.y = m.T_MATRIX_Y;
+        pt.z = m.T_MATRIX_Z;
+    }
+
+    inline void eigenToQuaternion(Eigen::Matrix4f &m, geometry_msgs::Quaternion &q)
+    {
+        float *a = m.data(); // convert eigen matrix to float array
+        float trace = a[0] + a[5] + a[10];
+        if( trace > 0 ) {
+            float s = 0.5f / sqrtf(trace+ 1.0f);
+            q.w = 0.25f / s;
+            q.x = ( a[9] - a[6] ) * s;
+            q.y = ( a[2] - a[8] ) * s;
+            q.z = ( a[4] - a[1] ) * s;
+        } else {
+            if ( a[0] > a[5] && a[0] > a[10] ) {
+            float s = 2.0f * sqrtf( 1.0f + a[0] - a[5] - a[10]);
+            q.w = (a[9] - a[6] ) / s;
+            q.x = 0.25f * s;
+            q.y = (a[1] + a[4] ) / s;
+            q.z = (a[2] + a[8] ) / s;
+            } else if (a[5] > a[10]) {
+            float s = 2.0f * sqrtf( 1.0f + a[5] - a[0] - a[10]);
+            q.w = (a[2] - a[8] ) / s;
+            q.x = (a[1] + a[4] ) / s;
+            q.y = 0.25f * s;
+            q.z = (a[6] + a[9] ) / s;
+            } else {
+            float s = 2.0f * sqrtf( 1.0f + a[10] - a[0] - a[5] );
+            q.w = (a[4] - a[1] ) / s;
+            q.x = (a[2] + a[8] ) / s;
+            q.y = (a[6] + a[9] ) / s;
+            q.z = 0.25f * s;
+            }
+        }
+    }
+    
     /**
      * @brief Convert a pose to a transformation matrix. The rotation component included
      * 
@@ -226,12 +266,12 @@ namespace transform_lib
     inline geometry_msgs::Pose eigenToPoseMsg(Eigen::Matrix4f &m)
     {
         geometry_msgs::Pose pose;
-        pose.position.x = m.T_MATRIX_X;
-        pose.position.y = m.T_MATRIX_Y;
-        pose.position.z = m.T_MATRIX_Z;
-        // TODO: add rotation component
+        eigenToPoint(m, pose.position);
+        eigenToQuaternion(m, pose.orientation);
 
         return pose;
     }
+
+
 
 } // namespace
