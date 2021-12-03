@@ -5,36 +5,33 @@ NodeParamLoader::NodeParamLoader(ros::NodeHandle* nh, std::string& param_namespa
 
 }
 
-void NodeParamLoader::loadParam(std::string& name, float& storage, float& default_value)
+void NodeParamLoader::loadParam(std::string name, float& storage, float default_value)
 {
-    if(!nh_->getParam(namespace_ + name, storage))
+    std::string complete_name = namespace_ + name;
+    if(!nh_->getParam(complete_name, storage))
     {
-        char* complete_name;
-        *complete_name = *(namespace_ + name).c_str();
-        ROS_ERROR("Failed to load param '%s'. Default: %f", complete_name, default_value);
+        ROS_ERROR("Failed to load param '%s'. Default: %f", complete_name.c_str(), default_value);
         storage = default_value;
     }
 }
 
-void NodeParamLoader::loadParam(std::string& name, double& storage, double& default_value)
+void NodeParamLoader::loadParam(std::string name, double& storage, double default_value)
 {
-    if(!nh_->getParam(namespace_ + name, storage))
+    std::string complete_name = namespace_ + name;
+    if(!nh_->getParam(complete_name, storage))
     {
-        char* complete_name;
-        *complete_name = *(namespace_ + name).c_str();
-        ROS_ERROR("Failed to load param '%s'. Default: %f", complete_name, default_value);
+        ROS_ERROR("Failed to load param '%s'. Default: %f", complete_name.c_str(), default_value);
         storage = default_value;
     }
 }
 
-void NodeParamLoader::loadParam(std::string& name, std::string& storage, std::string& default_value)
+void NodeParamLoader::loadParam(std::string name, std::string& storage, std::string default_value)
 {
-    if(!nh_->getParam(namespace_ + name, storage))
+    std::string complete_name = namespace_ + name;
+    if(!nh_->getParam(complete_name, storage))
     {
-        char *complete_name, *default_value_char;
-        *complete_name = *(namespace_ + name).c_str();
-        *default_value_char = *default_value.c_str();
-        ROS_ERROR("Failed to load param '%s'. Default: %s", complete_name, default_value_char);
+        ROS_ERROR("Failed to load param '%s'. Default: %s", complete_name.c_str(), default_value.c_str
+        ());
         storage = default_value;
     }
 }
