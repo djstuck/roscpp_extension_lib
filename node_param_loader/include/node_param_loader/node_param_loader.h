@@ -31,7 +31,7 @@ public:
      * @param default_value default value to apply if parameter is missing, float
      * 
      */
-    void loadParam(std::string& name, float& storage, float& default_value);
+    void loadParam(std::string name, float& storage, float default_value);
 
     /**
      * @brief load a double parameter into the node
@@ -40,7 +40,7 @@ public:
      * @param default_value default value to apply if parameter is missing double
      * 
      */
-    void loadParam(std::string& name, double& storage, double& default_value);
+    void loadParam(std::string name, double& storage, double default_value);
 
     /**
      * @brief load a string parameter into the node
@@ -49,7 +49,7 @@ public:
      * @param default_value default value to apply if parameter is missing, std::string
      * 
      */
-    void loadParam(std::string& name, std::string& storage, std::string& default_value);
+    void loadParam(std::string name, std::string& storage, std::string default_value);
 
 protected:
         ros::NodeHandle* nh_;
