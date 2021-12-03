@@ -179,9 +179,10 @@ void transform_lib::Transform::getTransformTimed(geometry_msgs::TransformStamped
 void transform_lib::Transform::performInitialChecks()
 {
     {
-        bool cannot_find_frames = false;
+        bool cannot_find_frames;
         do
         {
+            cannot_find_frames = false;
             if(!tfBuffer_-> _frameExists(target_frame_))
             {
                 ROS_WARN("%s frame is required but does not exist", target_frame_.c_str());
