@@ -27,9 +27,9 @@ namespace transform_lib
      * @brief Define the coefficients of x, y, and z from a 4x4 transformation matrix. This is commonly used to retrieve the x , y, and z values from the transformation matrix without any extra processes like multiplyByZeroVector.
      * 
      */
-    #define T_MATRIX_X coeff(3)
-    #define T_MATRIX_Y coeff(7)
-    #define T_MATRIX_Z coeff(11)
+    #define T_MATRIX_X coeff(12)
+    #define T_MATRIX_Y coeff(13)
+    #define T_MATRIX_Z coeff(14)
 
     /********************************************************************************************************************************
      * 
