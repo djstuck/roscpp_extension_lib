@@ -272,6 +272,30 @@ namespace transform_lib
         return pose;
     }
 
+    inline void printTransformMatrix(Eigen::Matrix4f &m)
+    {
+        float roll, pitch, yaw, x, y, z;
+        x = m.coeff(0,3);
+        y = m.coeff(1,3);
+        z = m.coeff(2,3);
+        float sy = sqrt(m.coeff(0,0));
+        if (!sy < 0.000001)
+        {
+            roll = atan2(m.coeff(2,1), m.coeff(2,2));
+	        pitch = atan2(-m.coeff(2,0), sy);
+	        yaw = atan2(m.coeff(1,0), m.coeff(0,0));
+        }
+        else
+        {
+            roll = atan2(-m.coeff(1,2), m.coeff(1,1));
+	        pitch = atan2(-m.coeff(2,0), sy);
+	        yaw = 0;
+        }
+
+        std::cout << "x: " << x << " y: " << y << " z: " << z << std::endl;
+        std::cout << "roll: " << roll*180/M_PI << " pitch: " << pitch*180/M_PI << " yaw:" << yaw*180/M_PI << std::endl;
+    }
+
 
 
 } // namespace
