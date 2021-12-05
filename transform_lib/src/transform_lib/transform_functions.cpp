@@ -182,16 +182,17 @@ void transform_lib::Transform::performInitialChecks()
         bool cannot_find_frames;
         do
         {
+            ros::Duration(0.3).sleep();
             cannot_find_frames = false;
             if(!tfBuffer_-> _frameExists(target_frame_))
             {
-                ROS_WARN("%s frame is required but does not exist", target_frame_.c_str());
+                ROS_WARN("%s frame is required but does not yet exist", target_frame_.c_str());
                 ros::Duration(1.0).sleep();
                 cannot_find_frames = true;
             }
             if(!tfBuffer_-> _frameExists(source_frame_))
             {
-                ROS_WARN("%s frame is required but does not exist", source_frame_.c_str());
+                ROS_WARN("%s frame is required but does not yet exist", source_frame_.c_str());
                 ros::Duration(1.0).sleep();
                 cannot_find_frames = true;
             }
