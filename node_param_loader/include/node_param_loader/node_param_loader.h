@@ -22,7 +22,7 @@ public:
      * @param namespace namespace of the parameters
      * 
      */
-    NodeParamLoader(ros::NodeHandle* nh, std::string& param_namespace);
+    NodeParamLoader(ros::NodeHandle* nh, std::string param_namespace);
 
     /**
      * @brief load a float parameter into the node
