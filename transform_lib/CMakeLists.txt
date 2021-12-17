@@ -4,6 +4,7 @@ project(transform_lib)
 find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   roscpp
+  tf2_ros
 )
 
 find_package(Eigen3 REQUIRED)
@@ -11,7 +12,7 @@ find_package(Eigen3 REQUIRED)
 catkin_package(
  INCLUDE_DIRS include
  LIBRARIES transform_lib
- CATKIN_DEPENDS geometry_msgs roscpp
+ CATKIN_DEPENDS geometry_msgs roscpp tf2_ros
  DEPENDS Eigen
 )
 include_directories(
