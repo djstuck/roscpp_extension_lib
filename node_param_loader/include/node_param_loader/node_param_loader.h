@@ -50,6 +50,15 @@ public:
      * 
      */
     void loadParam(std::string name, std::string& storage, std::string default_value);
+    
+    /**
+     * @brief load a int parameter into the node
+     * @param name name of the parameter, int
+     * @param storage storage of the parameter, int
+     * @param default_value default value to apply if parameter is missing, int
+     * 
+     */
+    void loadParam(std::string name, int& storage, int default_value);
 
 protected:
         ros::NodeHandle* nh_;
