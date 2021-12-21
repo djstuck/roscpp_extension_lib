@@ -124,7 +124,6 @@ void transform_lib::Transform::initialize(std::string &target_frame, std::string
     time_out_ = ros::Duration(0.0);
     time_ = ros::Time::now();
     error_msg_ = "Cannot find transform!";
-    tfBuffer_->_frameExists(target_frame_);
     performInitialChecks();
 }
 
