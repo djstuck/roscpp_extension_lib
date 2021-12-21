@@ -179,6 +179,10 @@ void transform_lib::Transform::getTransformTimed(geometry_msgs::TransformStamped
 void transform_lib::Transform::performInitialChecks()
 {
     {
+        if(target_frame_.empty() || source_frame_.empty())
+        {
+            ROS_ERROR("Tf frames cannot be an empty string!");
+        }
         bool cannot_find_frames;
         do
         {
