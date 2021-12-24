@@ -45,3 +45,19 @@ void NodeParamLoader::loadParam(std::string name, int& storage, int default_valu
         storage = default_value;
     }
 }
+
+void NodeParamLoader::loadParam(std::string name, bool& storage, bool default_value)
+{
+    std::string complete_name = namespace_ + name;
+    const char* default_value_string;
+    if(default_value)
+        default_value_string = "True";
+    else
+        default_value_string = "False";
+    
+    if(!nh_->getParam(complete_name, storage))
+    {
+        ROS_ERROR("Failed to load param '%s'. Default: %s", complete_name.c_str(), default_value_string);
+        storage = default_value;
+    }
+}

@@ -60,6 +60,15 @@ public:
      */
     void loadParam(std::string name, int& storage, int default_value);
 
+    /**
+     * @brief load a bool parameter into the node
+     * @param name name of the parameter, bool
+     * @param storage storage of the parameter, bool
+     * @param default_value default value to apply if parameter is missing, bool
+     * 
+     */
+    void loadParam(std::string name, bool& storage, bool default_value);
+
 protected:
         ros::NodeHandle* nh_;
         std::string namespace_;
