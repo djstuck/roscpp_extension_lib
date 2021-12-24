@@ -272,9 +272,14 @@ namespace transform_lib
         return pose;
     }
 
-    inline void printTransformMatrix(Eigen::Matrix4f &m)
+    inline void eigenToPoseMsg(Eigen::Matrix4f &m, geometry_msgs::Pose &pose)
     {
-        float roll, pitch, yaw, x, y, z;
+        eigenToPoint(m, pose.position);
+        eigenToQuaternion(m, pose.orientation);
+    }
+
+    inline void eigenToXYZRPY(Eigen::Matrix4f &m, float &x, float &y, float &z, float &roll, float &pitch, float &yaw)
+    {
         x = m.coeff(0,3);
         y = m.coeff(1,3);
         z = m.coeff(2,3);
@@ -291,11 +296,46 @@ namespace transform_lib
 	        pitch = atan2(-m.coeff(2,0), sy);
 	        yaw = 0;
         }
+    }
+
+    inline void printTransformMatrix(Eigen::Matrix4f &m)
+    {
+        float roll, pitch, yaw, x, y, z;
+        eigenToXYZRPY(m, x, y, z, roll, pitch, yaw);
 
         std::cout << "x: " << x << " y: " << y << " z: " << z << std::endl;
         std::cout << "roll: " << roll*180/M_PI << " pitch: " << pitch*180/M_PI << " yaw:" << yaw*180/M_PI << std::endl;
     }
 
+
+    inline Eigen::Matrix4f createTransformationMatrix(float x, float y, float z, float yaw) 
+    {
+    Eigen::Vector3f trans;
+    trans << x,y,z; 
+    Eigen::Transform<float, 3, Eigen::Affine> t;
+    t = Eigen::Translation<float, 3>(trans);
+    t.rotate(Eigen::AngleAxis<float>(yaw, Eigen::Vector3f::UnitZ()));
+    return t.matrix();
+    }
+
+    struct LineEquation
+    {
+        float b, m;
+    };
+
+    /**
+     * @brief This functions computes the transformation matrix in the form of a eigen matrix.
+     * The transform represents the first frame in the lines frame. The lines frame is represented as (0, 0) of the line is at the
+     * origin of the frame and the x component is facing along the line.
+     * Please note: The transformation matrix returned is the inverse of the transformation matrix of the line in the first frame.
+     * 
+     * @param line_equation 
+     * @return Eigen::Matrix4f 
+     */
+    inline Eigen::Matrix4f lineEquationToEigen(LineEquation &line_equation)
+    {
+       return createTransformationMatrix(0, line_equation.b, 0, atan(line_equation.m)).inverse();
+    }
 
 
 } // namespace
