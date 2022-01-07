@@ -21,7 +21,7 @@ include_directories(
   ${EIGEN_INCLUDE_DIRS}
 )
 
-add_library(transform_lib src/transform_lib/transform_functions.cpp src/transform_lib/quaternion_conversions.cpp src/transform_lib/eigen_transform_conversions.cpp)
+add_library(transform_lib src/transform_lib/transform_functions.cpp src/transform_lib/quaternion_conversions.cpp src/transform_lib/eigen_transform_conversions.cpp src/transform_lib/nan_check.cpp)
 
 target_link_libraries(transform_lib ${catkin_LIBRARIES})
 
