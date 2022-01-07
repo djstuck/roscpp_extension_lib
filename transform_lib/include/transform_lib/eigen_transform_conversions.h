@@ -337,5 +337,29 @@ namespace transform_lib
        return createTransformationMatrix(0, line_equation.b, 0, atan(line_equation.m)).inverse();
     }
 
+    /**
+     * @brief This function computes the 2D distance calculated from the translational component of the transformation matrix
+     * Note: It uses the x and y components of the transformation matrix
+     * 
+     * @param m 
+     * @return float distance
+     */
+    inline float eigen2DDistance(Eigen::Matrix4f& m)
+    {
+        return (m.T_MATRIX_X * m.T_MATRIX_X) + (m.T_MATRIX_Y * m.T_MATRIX_Y);
+    }
+
+    /**
+     * @brief This function computes the 3D distance calculated from the translational component of the transformation matrix
+     * Note: It uses the x, y and z components of the transformation matrix
+     * 
+     * @param m 
+     * @return float distance
+     */
+    inline float eigen3DDistance(Eigen::Matrix4f& m)
+    {
+        return (m.T_MATRIX_X * m.T_MATRIX_X) + (m.T_MATRIX_Y * m.T_MATRIX_Y) + (m.T_MATRIX_Z * m.T_MATRIX_Z);
+    }
+
 
 } // namespace
