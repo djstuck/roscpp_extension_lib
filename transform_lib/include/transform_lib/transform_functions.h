@@ -285,7 +285,7 @@ namespace transform_lib
     private:
         tf2_ros::Buffer* tfBuffer_;
         std::string target_frame_, source_frame_;
-        ros::Time time_;
+        ros::Duration time_offset_;
         ros::Duration time_out_;
         std::string error_msg_;
         bool initialized_ = false;
@@ -293,16 +293,16 @@ namespace transform_lib
     public:
         Transform();
 
-        Transform(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, ros::Time time, ros::Duration time_out, std::string error_msg);
+        Transform(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, double time_offset, ros::Duration time_out, std::string error_msg);
 
-        Transform(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, ros::Time time, std::string error_msg);
+        Transform(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, double time_offset, std::string error_msg);
 
         Transform(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, std::string error_msg);
 
         Transform(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer);
-        void initialize(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, ros::Time time, ros::Duration time_out, std::string error_msg);
+        void initialize(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, double time_offset, ros::Duration time_out, std::string error_msg);
 
-        void initialize(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, ros::Time time, std::string error_msg);
+        void initialize(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, double time_offset, std::string error_msg);
 
         void initialize(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, std::string error_msg);
 

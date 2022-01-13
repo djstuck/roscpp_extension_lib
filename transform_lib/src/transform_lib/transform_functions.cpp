@@ -14,7 +14,7 @@ void transform_lib::getTransform(std::string &target_frame, std::string &source_
         {
             ROS_WARN("Failure %s\n", ex.what()); //Print exception which was caught
             ROS_WARN("%s", error_msg.c_str()); //Print extended error message
-            ros::Duration(1.0).sleep();
+            ros::WallDuration(1.0).sleep();
             transform_exception = true;
         }
         
@@ -43,7 +43,7 @@ int transform_lib::getTransformTimed(std::string &target_frame, std::string &sou
         {
             ROS_WARN("Failure %s\n", ex.what()); //Print exception which was caught
             ROS_WARN("%s", error_msg.c_str()); //Print extended error message
-            ros::Duration(1.0).sleep();
+            ros::WallDuration(1.0).sleep();
             transform_exception = true;
         }
         
@@ -58,13 +58,13 @@ transform_lib::Transform::Transform()
 
 }
 
-transform_lib::Transform::Transform(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, ros::Time time, ros::Duration time_out, std::string error_msg) : target_frame_(target_frame), source_frame_(source_frame), tfBuffer_(tfBuffer), time_(time), time_out_(time_out), error_msg_(error_msg)
+transform_lib::Transform::Transform(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, double time_offset, ros::Duration time_out, std::string error_msg) : target_frame_(target_frame), source_frame_(source_frame), tfBuffer_(tfBuffer), time_offset_(time_offset), time_out_(time_out), error_msg_(error_msg)
 {
     performInitialChecks();
 }
 
 
-transform_lib::Transform::Transform(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, ros::Time time, std::string error_msg) : target_frame_(target_frame), source_frame_(source_frame), tfBuffer_(tfBuffer), time_(time), error_msg_(error_msg)
+transform_lib::Transform::Transform(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, double time_offset, std::string error_msg) : target_frame_(target_frame), source_frame_(source_frame), tfBuffer_(tfBuffer), time_offset_(time_offset), error_msg_(error_msg)
 {
     time_out_ = ros::Duration(0.0);
     performInitialChecks();
@@ -73,36 +73,36 @@ transform_lib::Transform::Transform(std::string &target_frame, std::string &sour
 transform_lib::Transform::Transform(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, std::string error_msg) : target_frame_(target_frame), source_frame_(source_frame), tfBuffer_(tfBuffer), error_msg_(error_msg)
 {
     time_out_ = ros::Duration(0.0);
-    time_ = ros::Time::now();
+    time_offset_ = ros::Duration(0);
     performInitialChecks();
 }
 
 transform_lib::Transform::Transform(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer)
 {
     time_out_ = ros::Duration(0.0);
-    time_ = ros::Time::now();
+    time_offset_ = ros::Duration(0);
     error_msg_ = "Cannot find transform!";
     tfBuffer_->_frameExists(target_frame_);
     performInitialChecks();
 }
 
-void transform_lib::Transform::initialize(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, ros::Time time, ros::Duration time_out, std::string error_msg) 
+void transform_lib::Transform::initialize(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, double time_offset, ros::Duration time_out, std::string error_msg) 
 {
     target_frame_ = target_frame;
     source_frame_ = source_frame;
     tfBuffer_ = tfBuffer;
-    time_ = time;
+    time_offset_ = ros::Duration(time_offset);
     time_out_ = time_out;
     error_msg_ = error_msg;
     performInitialChecks();
 }
 
-void transform_lib::Transform::initialize(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, ros::Time time, std::string error_msg) 
+void transform_lib::Transform::initialize(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, double time_offset, std::string error_msg) 
 {
     target_frame_ = target_frame;
     source_frame_ = source_frame;
     tfBuffer_ = tfBuffer;
-    time_ = time;
+    time_offset_ = ros::Duration(time_offset);
     error_msg_ = error_msg;
     time_out_ = ros::Duration(0.0);
     performInitialChecks();
@@ -115,14 +115,14 @@ void transform_lib::Transform::initialize(std::string &target_frame, std::string
     tfBuffer_ = tfBuffer;
     error_msg_ = error_msg;
     time_out_ = ros::Duration(0.0);
-    time_ = ros::Time::now();
+    time_offset_ = ros::Duration(0);
     performInitialChecks();
 }
 
 void transform_lib::Transform::initialize(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer)
 {
     time_out_ = ros::Duration(0.0);
-    time_ = ros::Time::now();
+    time_offset_ = ros::Duration(0);
     error_msg_ = "Cannot find transform!";
     performInitialChecks();
 }
@@ -135,13 +135,13 @@ void transform_lib::Transform::getTransform(geometry_msgs::TransformStamped &tra
         transform_exception = false;
         try
         {
-            transform_result = tfBuffer_ -> lookupTransform(target_frame_, source_frame_, time_, time_out_);
+            transform_result = tfBuffer_ -> lookupTransform(target_frame_, source_frame_, ros::Time::now() + time_offset_, time_out_);
         }
         catch(tf2::TransformException &ex) 
         {
             ROS_WARN("Failure %s\n", ex.what()); //Print exception which was caught
             ROS_WARN("%s", error_msg_.c_str()); //Print extended error message
-            ros::Duration(1.0).sleep();
+            ros::WallDuration(1.0).sleep();
             transform_exception = true;
         }
         
@@ -159,7 +159,7 @@ void transform_lib::Transform::getTransformTimed(geometry_msgs::TransformStamped
         {
             std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
 
-            transform_result = tfBuffer_ -> lookupTransform(target_frame_, source_frame_, time_, time_out_);
+            transform_result = tfBuffer_ -> lookupTransform(target_frame_, source_frame_, ros::Time::now() + time_offset_, time_out_);
 
             std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
             time_span = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
@@ -168,7 +168,7 @@ void transform_lib::Transform::getTransformTimed(geometry_msgs::TransformStamped
         {
             ROS_WARN("Failure %s\n", ex.what()); //Print exception which was caught
             ROS_WARN("%s", error_msg_.c_str()); //Print extended error message
-            ros::Duration(1.0).sleep();
+            ros::WallDuration(1.0).sleep();
             transform_exception = true;
         }
     } while (transform_exception);
@@ -185,18 +185,18 @@ void transform_lib::Transform::performInitialChecks()
         bool cannot_find_frames;
         do
         {
-            ros::Duration(0.3).sleep();
+            ros::WallDuration(0.3).sleep();
             cannot_find_frames = false;
             if(!tfBuffer_-> _frameExists(target_frame_))
             {
                 ROS_WARN("%s frame is required but does not yet exist", target_frame_.c_str());
-                ros::Duration(1.0).sleep();
+                ros::WallDuration(1.0).sleep();
                 cannot_find_frames = true;
             }
             if(!tfBuffer_-> _frameExists(source_frame_))
             {
                 ROS_WARN("%s frame is required but does not yet exist", source_frame_.c_str());
-                ros::Duration(1.0).sleep();
+                ros::WallDuration(1.0).sleep();
                 cannot_find_frames = true;
             }
         } while (cannot_find_frames);
