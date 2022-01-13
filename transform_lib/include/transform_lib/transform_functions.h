@@ -21,11 +21,11 @@ namespace transform_lib
      * @param source_frame 
      * @param tfBuffer 
      * @param transform_result 
-     * @param time 
+     * @param time_offset 
      * @param duration 
      * @param error_msg 
      */
-    void getTransform(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, geometry_msgs::TransformStamped &transform_result, ros::Time &time, ros::Duration &duration, std::string &error_msg);
+    void getTransform(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, geometry_msgs::TransformStamped &transform_result, double& time_offset, ros::Duration &duration, std::string &error_msg);
 
     /**
      * @brief Get a transform from two frame ids.
@@ -34,13 +34,13 @@ namespace transform_lib
      * @param source_frame 
      * @param tfBuffer 
      * @param transform_result 
-     * @param time 
+     * @param time_offset 
      * @param error_msg 
      */
-    inline void getTransform(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, geometry_msgs::TransformStamped &transform_result, ros::Time &time, std::string &error_msg)
+    inline void getTransform(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, geometry_msgs::TransformStamped &transform_result, double&time_offset, std::string &error_msg)
     {
         ros::Duration duration(0);
-        getTransform(target_frame, source_frame, tfBuffer, transform_result, time, duration, error_msg);
+        getTransform(target_frame, source_frame, tfBuffer, transform_result, time_offset, duration, error_msg);
     }
 
     /**
@@ -54,9 +54,9 @@ namespace transform_lib
      */
     inline void getTransform(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, geometry_msgs::TransformStamped &transform_result,  std::string &error_msg)
     {
-        ros::Time time = ros::Time::now();
+        double time_offset = 0;
         ros::Duration duration(0);
-        getTransform(target_frame, source_frame, tfBuffer, transform_result, time, duration, error_msg);
+        getTransform(target_frame, source_frame, tfBuffer, transform_result, time_offset, duration, error_msg);
     }
 
     /**
@@ -69,10 +69,10 @@ namespace transform_lib
      */
     inline void getTransform(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, geometry_msgs::TransformStamped &transform_result)
     {
-        ros::Time time = ros::Time::now();
+        double time_offset = 0;
         ros::Duration duration(0);
         std::string error_msg = "Failed to get transform";
-        getTransform(target_frame, source_frame, tfBuffer, transform_result, time, duration, error_msg);
+        getTransform(target_frame, source_frame, tfBuffer, transform_result, time_offset, duration, error_msg);
     }
 
     /**
@@ -81,15 +81,15 @@ namespace transform_lib
      * @param target_frame 
      * @param source_frame 
      * @param tfBuffer 
-     * @param time 
+     * @param time_offset 
      * @param duration 
      * @param error_msg 
      * @return geometry_msgs::TransformStamped 
      */
-    inline geometry_msgs::TransformStamped getTransform(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, ros::Time &time, ros::Duration &duration, std::string &error_msg)
+    inline geometry_msgs::TransformStamped getTransform(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, double& time_offset, ros::Duration &duration, std::string &error_msg)
     {
         geometry_msgs::TransformStamped transform_result;
-        getTransform(target_frame, source_frame, tfBuffer, transform_result, time, duration, error_msg);
+        getTransform(target_frame, source_frame, tfBuffer, transform_result, time_offset, duration, error_msg);
         return transform_result;
     }
 
@@ -99,14 +99,14 @@ namespace transform_lib
      * @param target_frame 
      * @param source_frame 
      * @param tfBuffer 
-     * @param time 
+     * @param time_offset 
      * @param error_msg 
      * @return geometry_msgs::TransformStamped 
      */
-    inline geometry_msgs::TransformStamped getTransform(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, ros::Time &time, std::string &error_msg)
+    inline geometry_msgs::TransformStamped getTransform(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, double& time_offset, std::string &error_msg)
     {
         geometry_msgs::TransformStamped transform_result;
-        getTransform(target_frame, source_frame, tfBuffer, transform_result, time, error_msg);
+        getTransform(target_frame, source_frame, tfBuffer, transform_result, time_offset, error_msg);
         return transform_result;
     }
 
@@ -156,12 +156,12 @@ namespace transform_lib
      * @param source_frame 
      * @param tfBuffer 
      * @param transform_result 
-     * @param time 
+     * @param time_offset 
      * @param duration 
      * @param error_msg 
      * @return time in milliseconds 
      */
-    int getTransformTimed(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, geometry_msgs::TransformStamped &transform_result, ros::Time &time, ros::Duration &duration, std::string &error_msg);
+    int getTransformTimed(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, geometry_msgs::TransformStamped &transform_result, double& time_offset, ros::Duration &duration, std::string &error_msg);
     
     /**
      * @brief Get a transform from two frame ids.
@@ -170,14 +170,14 @@ namespace transform_lib
      * @param source_frame 
      * @param tfBuffer 
      * @param transform_result 
-     * @param time 
+     * @param time_offset 
      * @param error_msg 
      * @return time in milliseconds
      */
-    inline int getTransformTimed(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, geometry_msgs::TransformStamped &transform_result, ros::Time &time, std::string &error_msg)
+    inline int getTransformTimed(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, geometry_msgs::TransformStamped &transform_result, double& time_offset, std::string &error_msg)
     {
         ros::Duration duration(0);
-        return getTransformTimed(target_frame, source_frame, tfBuffer, transform_result, time, duration, error_msg);
+        return getTransformTimed(target_frame, source_frame, tfBuffer, transform_result, time_offset, duration, error_msg);
     }
 
     /**
@@ -192,9 +192,9 @@ namespace transform_lib
      */
     inline int getTransformTimed(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, geometry_msgs::TransformStamped &transform_result,  std::string &error_msg)
     {
-        ros::Time time = ros::Time::now();
+        double time_offset = 0;
         ros::Duration duration(0);
-        return getTransformTimed(target_frame, source_frame, tfBuffer, transform_result, time, duration, error_msg);
+        return getTransformTimed(target_frame, source_frame, tfBuffer, transform_result, time_offset, duration, error_msg);
     }
 
     /**
@@ -208,10 +208,10 @@ namespace transform_lib
      */
     inline int getTransformTimed(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, geometry_msgs::TransformStamped &transform_result)
     {
-        ros::Time time = ros::Time::now();
+        double time_offset = 0;
         ros::Duration duration(0);
         std::string error_msg = "Failed to get transform";
-        return getTransformTimed(target_frame, source_frame, tfBuffer, transform_result, time, duration, error_msg);
+        return getTransformTimed(target_frame, source_frame, tfBuffer, transform_result, time_offset, duration, error_msg);
     }
 
     /********************************************************************************************************************************
@@ -224,17 +224,17 @@ namespace transform_lib
      * 
      ********************************************************************************************************************************/
 
-    inline void getTransformToEigen(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, Eigen::Matrix4f& result, ros::Time &time, ros::Duration &duration, std::string &error_msg)
+    inline void getTransformToEigen(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, Eigen::Matrix4f& result, double& time_offset, ros::Duration &duration, std::string &error_msg)
     {
         geometry_msgs::TransformStamped transform_result;
-        getTransform(target_frame, source_frame, tfBuffer, transform_result, time, duration, error_msg);
+        getTransform(target_frame, source_frame, tfBuffer, transform_result, time_offset, duration, error_msg);
         transformToEigen(transform_result, result);
     }
 
-    inline void getTransformToEigen(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, Eigen::Matrix4f& result, ros::Time &time, std::string &error_msg)
+    inline void getTransformToEigen(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, Eigen::Matrix4f& result, double& time_offset, std::string &error_msg)
     {
         geometry_msgs::TransformStamped transform_result;
-        getTransform(target_frame, source_frame, tfBuffer, transform_result, time, error_msg);
+        getTransform(target_frame, source_frame, tfBuffer, transform_result, time_offset, error_msg);
         transformToEigen(transform_result, result);
     }
 
@@ -252,17 +252,17 @@ namespace transform_lib
         transformToEigen(transform_result, result);
     }
 
-    inline int getTransformToEigenTimed(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, Eigen::Matrix4f& result, ros::Time &time, ros::Duration &duration, std::string &error_msg)
+    inline int getTransformToEigenTimed(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, Eigen::Matrix4f& result, double& time_offset, ros::Duration &duration, std::string &error_msg)
     {
         geometry_msgs::TransformStamped transform_result;
-        getTransformTimed(target_frame, source_frame, tfBuffer, transform_result, time, duration, error_msg);
+        getTransformTimed(target_frame, source_frame, tfBuffer, transform_result, time_offset, duration, error_msg);
         transformToEigen(transform_result, result);
     }
 
-    inline int getTransformToEigenTimed(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, Eigen::Matrix4f& result, ros::Time &time, std::string &error_msg)
+    inline int getTransformToEigenTimed(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, Eigen::Matrix4f& result, double& time_offset, std::string &error_msg)
     {
         geometry_msgs::TransformStamped transform_result;
-        getTransformTimed(target_frame, source_frame, tfBuffer, transform_result, time, error_msg);
+        getTransformTimed(target_frame, source_frame, tfBuffer, transform_result, time_offset, error_msg);
         transformToEigen(transform_result, result);
     }
 
@@ -285,7 +285,7 @@ namespace transform_lib
     private:
         tf2_ros::Buffer* tfBuffer_;
         std::string target_frame_, source_frame_;
-        ros::Duration time_offset_;
+        double time_offset_;
         ros::Duration time_out_;
         std::string error_msg_;
         bool initialized_ = false;
