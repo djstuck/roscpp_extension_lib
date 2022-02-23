@@ -4,6 +4,7 @@
 #include "geometry_msgs/TransformStamped.h"
 #include "geometry_msgs/Pose.h"
 #include "geometry_msgs/PoseStamped.h"
+#include <chrono>
 
 namespace transform_lib
 {
@@ -224,9 +225,10 @@ namespace transform_lib
         pt.z = m.T_MATRIX_Z;
     }
 
-    inline void eigenToQuaternion(Eigen::Matrix4f &m, geometry_msgs::Quaternion &q)
+    inline void eigenToQuaternion(const Eigen::Matrix4f &m, geometry_msgs::Quaternion &q)
     {
-        float *a = m.data(); // convert eigen matrix to float array
+        // std::chrono::high_resolution_clock::time_point  t1 = std::chrono::high_resolution_clock::now();
+        /*float *a = m.data(); // convert eigen matrix to float array
         float trace = a[0] + a[5] + a[10];
         if( trace > 0 ) {
             float s = 0.5f / sqrtf(trace+ 1.0f);
@@ -254,8 +256,55 @@ namespace transform_lib
             q.y = (a[6] + a[9] ) / s;
             q.z = 0.25f * s;
             }
-        }
+        }*/
+        // std::chrono::high_resolution_clock::time_point  t2 = std::chrono::high_resolution_clock::now();
+        // auto time_span1 = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1);
+        // std::cout << "Time taken1: " << time_span1.count() << " microseconds" << std::endl;
+        Eigen::Matrix3f m3 = m.block<3,3>(0,0);
+        Eigen::Quaternionf q2(m3);
+        // std::chrono::high_resolution_clock::time_point  t3 = std::chrono::high_resolution_clock::now();
+        q2.normalize();
+        q.x = q2.x();
+        q.y = q2.y();
+        q.z = q2.z();
+        q.w = q2.w();
+        // std::chrono::high_resolution_clock::time_point  t4 = std::chrono::high_resolution_clock::now();
+        // auto time_span2 = std::chrono::duration_cast<std::chrono::microseconds>(t4 - t3);
+        // std::cout << "Time taken2: " << time_span2.count() << " microseconds" << std::endl;
+
+    // This is trying to use eigen code to quickly calculate the quaternion. It is not working. need to do as above is too slow.
+    /*const typename Eigen::internal::nested_eval<Eigen::Matrix4f,2>::type mat(m);
+    EIGEN_USING_STD_MATH(sqrt)
+    // This algorithm comes from  "Quaternion Calculus and Fast Animation",
+    // Ken Shoemake, 1987 SIGGRAPH course notes
+    Eigen::Scalar t = mat.trace();
+    if (t > Scalar(0))
+    {
+      t = sqrt(t + Scalar(1.0));
+      q.w() = Scalar(0.5)*t;
+      t = Scalar(0.5)/t;
+      q.x() = (mat.coeff(2,1) - mat.coeff(1,2)) * t;
+      q.y() = (mat.coeff(0,2) - mat.coeff(2,0)) * t;
+      q.z() = (mat.coeff(1,0) - mat.coeff(0,1)) * t;
     }
+    else
+    {
+      Eigen::Index i = 0;
+      if (mat.coeff(1,1) > mat.coeff(0,0))
+        i = 1;
+      if (mat.coeff(2,2) > mat.coeff(i,i))
+        i = 2;
+      Eigen::Index j = (i+1)%3;
+      Eigen::Index k = (j+1)%3;
+
+      t = sqrt(mat.coeff(i,i)-mat.coeff(j,j)-mat.coeff(k,k) + Scalar(1.0));
+      q.coeffs().coeffRef(i) = Scalar(0.5) * t;
+      t = Scalar(0.5)/t;
+      q.w() = (mat.coeff(k,j)-mat.coeff(j,k))*t;
+      q.coeffs().coeffRef(j) = (mat.coeff(j,i)+mat.coeff(i,j))*t;
+      q.coeffs().coeffRef(k) = (mat.coeff(k,i)+mat.coeff(i,k))*t;
+    }*/
+}
     
     /**
      * @brief Convert a pose to a transformation matrix. The rotation component included
@@ -304,7 +353,7 @@ namespace transform_lib
         eigenToXYZRPY(m, x, y, z, roll, pitch, yaw);
 
         std::cout << "x: " << x << " y: " << y << " z: " << z << std::endl;
-        std::cout << "roll: " << roll*180/M_PI << " pitch: " << pitch*180/M_PI << " yaw:" << yaw*180/M_PI << std::endl;
+        std::cout << "roll: " << roll*180/M_PI << " degrees" << " pitch: " << pitch*180/M_PI << " degrees" << " yaw:" << yaw*180/M_PI << " degrees" << std::endl;
     }
 
 
@@ -346,7 +395,7 @@ namespace transform_lib
      */
     inline float eigen2DDistance(Eigen::Matrix4f& m)
     {
-        return (m.T_MATRIX_X * m.T_MATRIX_X) + (m.T_MATRIX_Y * m.T_MATRIX_Y);
+        return sqrt((m.T_MATRIX_X * m.T_MATRIX_X) + (m.T_MATRIX_Y * m.T_MATRIX_Y));
     }
 
     /**
@@ -358,7 +407,7 @@ namespace transform_lib
      */
     inline float eigen3DDistance(Eigen::Matrix4f& m)
     {
-        return (m.T_MATRIX_X * m.T_MATRIX_X) + (m.T_MATRIX_Y * m.T_MATRIX_Y) + (m.T_MATRIX_Z * m.T_MATRIX_Z);
+        return sqrt((m.T_MATRIX_X * m.T_MATRIX_X) + (m.T_MATRIX_Y * m.T_MATRIX_Y) + (m.T_MATRIX_Z * m.T_MATRIX_Z));
     }
 
 
