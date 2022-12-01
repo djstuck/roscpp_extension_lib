@@ -372,6 +372,163 @@ namespace transform_lib
         float b, m;
     };
 
+    class Point
+    {
+        private:
+            Eigen::Vector4f vector;
+            bool initialised;
+        public:
+            Point(){initialised=false;}
+            // Point operator=(const Point &other)
+            // {
+            //     Point newPoint;
+            //     newPoint.vector = other.vector;
+            //     newPoint.initialised = other.initialised;
+            //     return newPoint;
+            // }
+            Point(const Point &other) : vector(other.vector), initialised(other.initialised) {}
+            
+            Point(geometry_msgs::Point &p)
+            {
+                vector << p.x, p.y, p.z, 1;
+                initialised = true;
+            }
+            Point(float x, float y, float z)
+            {
+                vector << x, y, z, 1;
+                initialised = true;
+            }
+            void operator()(float x, float y, float z)
+            {
+                vector << x, y, z, 1;
+                initialised = true;
+            }
+
+            void operator()(const Point &p)
+            {
+                vector = p.vector;
+                initialised = p.initialised;
+            }
+
+            const float x() const
+            {
+                if(initialised)
+                {
+                    return vector.x();
+                }
+                else
+                {
+                    return 0;
+                    std::cout << "Point not initialised" << std::endl;
+                }
+            }
+            const float y() const
+            {
+                if(initialised)
+                {
+                    return vector.y();
+                }
+                else
+                {
+                    return 0;
+                    std::cout << "Point not initialised" << std::endl;
+                }
+            }
+            const float z() const
+            {
+                if(initialised)
+                {
+                    return vector.z();
+                }
+                else
+                {
+                    return 0;
+                    std::cout << "Point not initialised" << std::endl;
+                }
+            }
+            
+            Eigen::Vector4f operator*(const Eigen::Matrix4f& m)
+            {
+                if(initialised)
+                {
+                    return m * vector;
+                }
+                else
+                {
+                    return m * Eigen::Vector4f::Zero();
+                    std::cout << "Point has not been initialised" << std::endl;
+                }
+            }
+            void convertToGeometryPoint(geometry_msgs::Point& p)
+            {
+                if(!vector.hasNaN())
+                {
+                    p.x = vector(0);
+                    p.y = vector(1);
+                    p.z = vector(2);
+                }
+                else
+                {
+                    p.x = 0;
+                    p.y = 0;
+                    p.z = 0;
+                }
+            }
+            geometry_msgs::Point convertToGeometryPoint()
+            {
+                geometry_msgs::Point p;
+                convertToGeometryPoint(p);
+                return p;
+            }
+            void transformPoint(Eigen::Matrix4f& transform_matrix)
+            {
+                if(initialised)
+                {
+                    vector = transform_matrix * vector;
+                }
+                else
+                {
+                    vector = transform_matrix * Eigen::Vector4f::Zero();
+                    std::cout << "Point has not been initialised" << std::endl;
+                }
+            }
+            Point transformPointToANewPoint(Eigen::Matrix4f& transform_matrix)
+            {
+                Point p;
+                if(initialised)
+                {
+                    p.vector = transform_matrix * vector;
+                    p.initialised = true;
+                }
+                else
+                {
+                    p.vector = transform_matrix * Eigen::Vector4f::Zero();
+                    std::cout << "Point has not been initialised" << std::endl;
+                }               
+                return p;
+            }
+            const void printPoint() const
+            {
+                if(initialised)
+                {
+                    std::cout << "x: " << vector(0) << " y: " << vector(1) << " z: " << vector(2) << std::endl;
+                }
+                else
+                {
+                    std::cout << "Point has not been initialised" << std::endl;
+                }
+            }
+    };
+
+    inline LineEquation eigenToLineEquation(Eigen::Matrix4f &mat)
+    {
+        LineEquation line;
+        float x,y,z,r,p,yaw;
+        eigenToXYZRPY(mat, x, y, z, r, p, yaw);
+        line.b = y;
+        line.m = tan(yaw);
+    }
+
     /**
      * @brief This functions computes the transformation matrix in the form of a eigen matrix.
      * The transform represents the first frame in the lines frame. The lines frame is represented as (0, 0) of the line is at the
@@ -384,6 +541,11 @@ namespace transform_lib
     inline Eigen::Matrix4f lineEquationToEigen(LineEquation &line_equation)
     {
        return createTransformationMatrix(0, line_equation.b, 0, atan(line_equation.m)).inverse();
+    }
+
+    inline void lineEquationToEigen(Eigen::Matrix4f &mat, LineEquation &line_equation)
+    {
+        mat = createTransformationMatrix(0, line_equation.b, 0, atan(line_equation.m)).inverse();
     }
 
     /**
