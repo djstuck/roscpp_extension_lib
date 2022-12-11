@@ -28,25 +28,22 @@ void transform_lib::yawToQuaternion(float yaw, bool isInDegrees, geometry_msgs::
 
 float transform_lib::vectorToAngle(float& x, float& y)
 {
-    float angle;
-    if(x > 0.0 && y > 0.0)
-        angle = atan2(y, x);
-    else if(x < 0.0)  //if y is positive or negative
-        angle = M_PI + atan2(y, x);
-    else
-        angle = M_PI * 2 + atan2(y, x);
+    float angle = atan2(y, x);
+    if (angle < 0)
+    {
+        angle += 2 * M_PI;
+    }
 
     return angle;
 }
 
 void transform_lib::vectorToAngle(float& x, float& y, float &angle)
 {
-    if(x > 0.0 && y > 0.0)
-        angle = atan2(y, x);
-    else if(x < 0.0)  //if y is positive or negative
-        angle = M_PI + atan2(y, x);
-    else
-        angle = M_PI * 2 + atan2(y, x);
+    angle = atan2(y, x);
+    if (angle < 0)
+    {
+        angle += 2 * M_PI;
+    }
 }
 
 void transform_lib::rotateQuaternionByAngle(float xx, float yy, float zz, float& angle, geometry_msgs::Quaternion& result)
