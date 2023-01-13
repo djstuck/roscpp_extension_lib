@@ -255,29 +255,33 @@ namespace transform_lib
     inline int getTransformToEigenTimed(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, Eigen::Matrix4f& result, double& time_offset, ros::Duration &duration, std::string &error_msg)
     {
         geometry_msgs::TransformStamped transform_result;
-        getTransformTimed(target_frame, source_frame, tfBuffer, transform_result, time_offset, duration, error_msg);
+        int time = getTransformTimed(target_frame, source_frame, tfBuffer, transform_result, time_offset, duration, error_msg);
         transformToEigen(transform_result, result);
+        return time;
     }
 
     inline int getTransformToEigenTimed(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, Eigen::Matrix4f& result, double& time_offset, std::string &error_msg)
     {
         geometry_msgs::TransformStamped transform_result;
-        getTransformTimed(target_frame, source_frame, tfBuffer, transform_result, time_offset, error_msg);
+        int time = getTransformTimed(target_frame, source_frame, tfBuffer, transform_result, time_offset, error_msg);
         transformToEigen(transform_result, result);
+        return time;
     }
 
     inline int getTransformToEigenTimed(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, Eigen::Matrix4f& result, std::string &error_msg)
     {
         geometry_msgs::TransformStamped transform_result;
-        getTransformTimed(target_frame, source_frame, tfBuffer, transform_result, error_msg);
+        int time = getTransformTimed(target_frame, source_frame, tfBuffer, transform_result, error_msg);
         transformToEigen(transform_result, result);
+        return time;
     }
 
     inline int getTransformToEigenTimed(std::string &target_frame, std::string &source_frame, tf2_ros::Buffer* tfBuffer, Eigen::Matrix4f& result)
     {
         geometry_msgs::TransformStamped transform_result;
-        getTransformTimed(target_frame, source_frame, tfBuffer, transform_result);
+        int time = getTransformTimed(target_frame, source_frame, tfBuffer, transform_result);
         transformToEigen(transform_result, result);
+        return time;
     }
 
     class Transform

@@ -527,6 +527,7 @@ namespace transform_lib
         eigenToXYZRPY(mat, x, y, z, r, p, yaw);
         line.b = y;
         line.m = tan(yaw);
+        return line;
     }
 
     /**
